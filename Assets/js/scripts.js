@@ -2,6 +2,7 @@
 const APIKey = config.APIKey;
 const searchBtn = document.getElementById("search-btn");
 const cityArchive = document.getElementById("city-archive");
+const selectedCity = document.getElementById("selected-city");
 
 // for (var i = 0; i < localStorage.length; i++) {
 //   var key = localStorage.key(i);
@@ -46,7 +47,6 @@ const getWeather = (city, lat, lon) => {
     .then((data) => {
       console.log(data);
 
-      let selectedCity = document.getElementById("selected-city");
       let tempCurrent = document.getElementById("temp");
       let windCurrent = document.getElementById("wind");
       let humidityCurrent = document.getElementById("humidity");
@@ -54,8 +54,9 @@ const getWeather = (city, lat, lon) => {
 
       let dataUVI = data.current.uvi;
 
-      selectedCity.innerHTML = city;
+      selectedCity.innerHTML += `<span>${city}</span>`;
       getDate();
+      getIcon(data.current.weather[0].icon);
       tempCurrent.innerHTML = data.current.temp;
       windCurrent.innerHTML = data.current.wind_speed;
       humidityCurrent.innerHTML = data.current.humidity;
@@ -75,8 +76,8 @@ const getWeather = (city, lat, lon) => {
     });
 };
 
+// get/add current date
 const getDate = () => {
-  let selectedCity = document.getElementById("selected-city");
 
   let today = new Date();
   const dd = String(today.getDate()).padStart(2, "0");
@@ -84,8 +85,14 @@ const getDate = () => {
   const yyyy = today.getFullYear();
 
   today = mm + "/" + dd + "/" + yyyy;
-  selectedCity.innerHTML += " " + today;
+  selectedCity.innerHTML += ` <span>${today}</span>`;
+
 };
+
+const getIcon = (icon) => {
+  console.log(icon);
+  selectedCity.innerHTML += ` <img src="http://openweathermap.org/img/wn/${icon}@2x.png" width="50" height="50">`;
+}
 
 // get lat/lon based on city name
 const getLatLon = (city) => {
