@@ -1,35 +1,30 @@
-// grab API Key from config and Search btn from HTML
+
 const APIKey = config.APIKey;
 const searchBtn = document.getElementById("search-btn");
 const cityArchive = document.getElementById("city-archive");
 const selectedCity = document.getElementById("selected-city");
 
-// for (var i = 0; i < localStorage.length; i++) {
-//   var key = localStorage.key(i);
-//   var item = JSON.parse( localStorage.getItem(key) );
-//   console.log(item);
-//   //addCity();
-// }
-
-// add city to archive (button list & localstorage)
+// ADD CITY TO ARCHIVE via button list & localstorage
 const addToArchive = (city, lat, lon) => {
-  const cityStorage = {
-    name: city,
+  const cityCoord = {
     lat: lat,
     lon: lon,
   };
-  localStorage.setItem("city", JSON.stringify(cityStorage));
+  localStorage.setItem(city, JSON.stringify(cityCoord));
   // todo: check to see if city exists
-  addCity(city);
+  addCity(city, lat, lon);
 };
 
 const addCity = (city, lat, lon) => {
-  cityArchive.innerHTML += `<button class="city-btn">${city}</button>`;
+  cityArchive.innerHTML += 
+  `<button class="city-btn" data-lat="${lat}" data-lon="${lon}">${city}</button>`;
+
   cityCount = cityArchive.getElementsByTagName("*").length;
 
   for (var i = 0; i < cityCount; i++) {
-    const cityBtn = document.getElementsByClassName("city-btn");
-    cityBtn[i].addEventListener("click", getWeather(city, lat, lon));
+    // const cityBtn = document.getElementsByClassName("city-btn");
+    // console.log(cityBtn[i]);
+    // cityBtn[i].addEventListener("click", getWeather(city, lat, lon));
   }
 };
 
@@ -47,19 +42,20 @@ const getWeather = (city, lat, lon) => {
     .then((data) => {
       console.log(data);
 
-      let tempCurrent = document.getElementById("temp");
-      let windCurrent = document.getElementById("wind");
-      let humidityCurrent = document.getElementById("humidity");
-      let uviCurrent = document.getElementById("uvi");
-
-      let dataUVI = data.current.uvi;
+      let tempCurrent = document.getElementById("temp-current");
+      let windCurrent = document.getElementById("wind-current");
+      let humidityCurrent = document.getElementById("humidity-current");
+      let uviCurrent = document.getElementById("uvi-current");
 
       selectedCity.innerHTML += `<span>${city}</span>`;
       getDate();
       getIcon(data.current.weather[0].icon);
+      
       tempCurrent.innerHTML = data.current.temp;
       windCurrent.innerHTML = data.current.wind_speed;
       humidityCurrent.innerHTML = data.current.humidity;
+
+      let dataUVI = data.current.uvi;
       uviCurrent.innerHTML = dataUVI;
 
       if (dataUVI <= 2) {
@@ -73,6 +69,26 @@ const getWeather = (city, lat, lon) => {
       } else {
         uviCurrent.style.backgroundColor = "purple";
       }
+
+      // add data to 5 day forecast cards
+      for ( var i = 0; i <= 4; i++) {
+        let day = document.getElementById("day"+(i+1));
+        
+        let iconForecast = data.daily[i].weather[0].icon;
+        let tempForecast = data.daily[i].temp.day;
+        let windForecast = data.daily[i].wind_speed;
+        let humidityForecast = data.daily[i].humidity;
+        
+        day.innerHTML =
+          `<h2></h2>
+          <img src="http://openweathermap.org/img/wn/${iconForecast}@2x.png">
+          <ul>
+            <li>Temp: ${tempForecast}</li>
+            <li>Wind: ${windForecast}</li>
+            <li>Humidity: ${humidityForecast}</li>
+          </ul>` 
+      };
+
     });
 };
 
@@ -81,7 +97,7 @@ const getDate = () => {
 
   let today = new Date();
   const dd = String(today.getDate()).padStart(2, "0");
-  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const mm = String(today.getMonth() + 1).padStart(1, "0");
   const yyyy = today.getFullYear();
 
   today = mm + "/" + dd + "/" + yyyy;
@@ -90,7 +106,6 @@ const getDate = () => {
 };
 
 const getIcon = (icon) => {
-  console.log(icon);
   selectedCity.innerHTML += ` <img src="http://openweathermap.org/img/wn/${icon}@2x.png" width="50" height="50">`;
 }
 
@@ -108,9 +123,8 @@ const getLatLon = (city) => {
     .then((data) => {
       const lat = data[0].lat;
       const lon = data[0].lon;
-      console.log(lat, lon);
       getWeather(city, lat, lon);
-      // addToArchive(city, lat, lon);
+      addToArchive(city, lat, lon);
     });
 };
 
@@ -119,4 +133,12 @@ searchBtn.addEventListener("click", () => {
   const city = document.getElementById("city-input").value;
   // check for empty input
   getLatLon(city);
+  document.getElementById("city-input").value = "";
 });
+
+// add archived city btns
+for (var i = 0; i < localStorage.length; i++) {
+  var key = localStorage.key(i);
+  var item = JSON.parse( localStorage.getItem(key) );
+  addCity( key, item.lat, item.lon );
+}
