@@ -15,22 +15,22 @@ const addToArchive = (city, lat, lon) => {
   const cityStorage = {
     name: city,
     lat: lat,
-    lon: lon
-  }
-  localStorage.setItem( "city", JSON.stringify(cityStorage) );
+    lon: lon,
+  };
+  localStorage.setItem("city", JSON.stringify(cityStorage));
   // todo: check to see if city exists
   addCity(city);
 };
 
-const addCity = (city,lat,lon) => {
+const addCity = (city, lat, lon) => {
   cityArchive.innerHTML += `<button class="city-btn">${city}</button>`;
-  cityCount = cityArchive.getElementsByTagName('*').length;
+  cityCount = cityArchive.getElementsByTagName("*").length;
 
-  for (var i = 0 ; i < cityCount; i++) {
+  for (var i = 0; i < cityCount; i++) {
     const cityBtn = document.getElementsByClassName("city-btn");
     cityBtn[i].addEventListener("click", getWeather(city, lat, lon));
- }
-}
+  }
+};
 
 const getWeather = (city, lat, lon) => {
   let queryURL =
@@ -44,20 +44,47 @@ const getWeather = (city, lat, lon) => {
   fetch(queryURL)
     .then((response) => response.json())
     .then((data) => {
+      console.log(data);
 
       let selectedCity = document.getElementById("selected-city");
-      let temp = document.getElementById("temp");
-      let wind = document.getElementById("wind");
-      let humidity = document.getElementById("humidity");
-      let uvi = document.getElementById("uvi");
+      let tempCurrent = document.getElementById("temp");
+      let windCurrent = document.getElementById("wind");
+      let humidityCurrent = document.getElementById("humidity");
+      let uviCurrent = document.getElementById("uvi");
+
+      let dataUVI = data.current.uvi;
 
       selectedCity.innerHTML = city;
-      temp.innerHTML = data.current.temp;
-      wind.innerHTML = data.current.wind_speed;
-      humidity.innerHTML = data.current.humidity;
-      uvi.innerHTML = data.current.uvi;
+      getDate();
+      tempCurrent.innerHTML = data.current.temp;
+      windCurrent.innerHTML = data.current.wind_speed;
+      humidityCurrent.innerHTML = data.current.humidity;
+      uviCurrent.innerHTML = dataUVI;
 
+      if (dataUVI <= 2) {
+        uviCurrent.style.backgroundColor = "green";
+      } else if (dataUVI >= 3 && dataUVI <= 5) {
+        uviCurrent.style.backgroundColor = "yellow";
+      } else if (dataUVI >= 6 && dataUVI <= 7) {
+        uviCurrent.style.backgroundColor = "orange";
+      } else if (dataUVI >= 8 && dataUVI <= 10) {
+        uviCurrent.style.backgroundColor = "red";
+      } else {
+        uviCurrent.style.backgroundColor = "purple";
+      }
     });
+};
+
+const getDate = () => {
+  let selectedCity = document.getElementById("selected-city");
+
+  let today = new Date();
+  const dd = String(today.getDate()).padStart(2, "0");
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const yyyy = today.getFullYear();
+
+  today = mm + "/" + dd + "/" + yyyy;
+  selectedCity.innerHTML += " " + today;
 };
 
 // get lat/lon based on city name
@@ -74,11 +101,10 @@ const getLatLon = (city) => {
     .then((data) => {
       const lat = data[0].lat;
       const lon = data[0].lon;
-      console.log(lat,lon);
+      console.log(lat, lon);
       getWeather(city, lat, lon);
       // addToArchive(city, lat, lon);
     });
-
 };
 
 // upon search btn click, get lat/lon and add city to archive
