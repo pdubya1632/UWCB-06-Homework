@@ -58,6 +58,10 @@ header {
     margin-bottom: 10px;
 }
 
+#city-input {
+    margin-bottom: 10px;
+}
+
 #search-btn {
     background-color: #5098e6;
     color: white;
