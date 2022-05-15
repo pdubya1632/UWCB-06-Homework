@@ -129,5 +129,8 @@ searchBtn.addEventListener("click", () => {
 for (var i = 0; i < localStorage.length; i++) {
   var key = localStorage.key(i);
   var item = localStorage.getItem(key);
-  addCity(key, item.lat, item.lon);
+  
+  if (item.lat) {
+    addCity(key, item.lat, item.lon);
+  }
 }
