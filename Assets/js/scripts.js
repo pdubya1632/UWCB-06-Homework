@@ -128,6 +128,6 @@ searchBtn.addEventListener("click", () => {
 // add archived city btns
 for (var i = 0; i < localStorage.length; i++) {
   var key = localStorage.key(i);
-  var item = JSON.parse(localStorage.getItem(key));
+  var item = localStorage.getItem(key);
   addCity(key, item.lat, item.lon);
 }
