@@ -4,6 +4,13 @@ const searchBtn = document.getElementById("search-btn");
 const cityArchive = document.getElementById("city-archive");
 const selectedCity = document.getElementById("selected-city");
 
+// GET CURRENT DATE
+let today = new Date();
+const dd = today.getDate();
+const mm = today.getMonth() + 1;
+const yyyy = today.getFullYear();
+today = mm + "/" + dd + "/" + yyyy;
+
 // ADD CITY TO ARCHIVE via button list & localstorage
 const addToArchive = (city, lat, lon) => {
   const cityCoord = {
@@ -16,16 +23,9 @@ const addToArchive = (city, lat, lon) => {
 };
 
 const addCity = (city, lat, lon) => {
+  // check to see if city is already in list
   cityArchive.innerHTML += 
-  `<button class="city-btn" data-lat="${lat}" data-lon="${lon}">${city}</button>`;
-
-  cityCount = cityArchive.getElementsByTagName("*").length;
-
-  for (var i = 0; i < cityCount; i++) {
-    // const cityBtn = document.getElementsByClassName("city-btn");
-    // console.log(cityBtn[i]);
-    // cityBtn[i].addEventListener("click", getWeather(city, lat, lon));
-  }
+  `<button onclick="getWeather('${city}',${lat},${lon})">${city}</button>`;
 };
 
 const getWeather = (city, lat, lon) => {
@@ -42,14 +42,17 @@ const getWeather = (city, lat, lon) => {
     .then((data) => {
       console.log(data);
 
+      selectedCity.innerHTML = "";
+
       let tempCurrent = document.getElementById("temp-current");
       let windCurrent = document.getElementById("wind-current");
       let humidityCurrent = document.getElementById("humidity-current");
       let uviCurrent = document.getElementById("uvi-current");
+      let icon = data.current.weather[0].icon;
 
       selectedCity.innerHTML += `<span>${city}</span>`;
-      getDate();
-      getIcon(data.current.weather[0].icon);
+      selectedCity.innerHTML += ` <span>${today}</span>`;
+      selectedCity.innerHTML += ` <img src="http://openweathermap.org/img/wn/${icon}@2x.png" width="50" height="50">`;
       
       tempCurrent.innerHTML = data.current.temp;
       windCurrent.innerHTML = data.current.wind_speed;
@@ -58,7 +61,8 @@ const getWeather = (city, lat, lon) => {
       let dataUVI = data.current.uvi;
       uviCurrent.innerHTML = dataUVI;
 
-      if (dataUVI <= 2) {
+      // set uvi threshhold colors
+      if (dataUVI <= 3) {
         uviCurrent.style.backgroundColor = "green";
       } else if (dataUVI >= 3 && dataUVI <= 5) {
         uviCurrent.style.backgroundColor = "yellow";
@@ -73,14 +77,16 @@ const getWeather = (city, lat, lon) => {
       // add data to 5 day forecast cards
       for ( var i = 0; i <= 4; i++) {
         let day = document.getElementById("day"+(i+1));
-        
+        let addDate = i + 1;
+
+        let date = mm + "/" + (dd + addDate) + "/" + yyyy;
         let iconForecast = data.daily[i].weather[0].icon;
         let tempForecast = data.daily[i].temp.day;
         let windForecast = data.daily[i].wind_speed;
         let humidityForecast = data.daily[i].humidity;
         
         day.innerHTML =
-          `<h2></h2>
+          `<h2>${date}</h2>
           <img src="http://openweathermap.org/img/wn/${iconForecast}@2x.png">
           <ul>
             <li>Temp: ${tempForecast}</li>
@@ -91,23 +97,6 @@ const getWeather = (city, lat, lon) => {
 
     });
 };
-
-// get/add current date
-const getDate = () => {
-
-  let today = new Date();
-  const dd = String(today.getDate()).padStart(2, "0");
-  const mm = String(today.getMonth() + 1).padStart(1, "0");
-  const yyyy = today.getFullYear();
-
-  today = mm + "/" + dd + "/" + yyyy;
-  selectedCity.innerHTML += ` <span>${today}</span>`;
-
-};
-
-const getIcon = (icon) => {
-  selectedCity.innerHTML += ` <img src="http://openweathermap.org/img/wn/${icon}@2x.png" width="50" height="50">`;
-}
 
 // get lat/lon based on city name
 const getLatLon = (city) => {
