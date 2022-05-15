@@ -143,6 +143,6 @@ header {
     #days {
         display: grid;
         grid-template-columns: 19% 19% 19% 19% 19%;
-        column-gap: 10px;
+        column-gap: 9px;
     }
 }
