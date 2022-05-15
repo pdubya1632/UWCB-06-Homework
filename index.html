@@ -14,31 +14,35 @@
     <div class="container">
       <div class="sidebar">
         <div id="city-search">
-          <h2>Search for a City:</h2>
+          <h2>Search for a City</h2>
           <input type="text" class="input" id="city-input" />
-          <input type="submit" value="Search" id="search-btn" />
+          <button type="submit" id="search-btn">Search</button>
         </div>
 
-        <div id="city-archive"></div>
+        <div id="city-archive">
+          <h3>Previous Searches</h3>
+        </div>
       </div>
 
-      <main>
+      <main id="weather-results">
         <div id="city-result">
           <h2 id="selected-city"></h2>
           <ul>
-            <li>Temperature: <span id="temp-current"></span> F</li>
+            <li>Temperature: <span id="temp-current"></span> &#8457;</li>
             <li>Wind: <span id="wind-current"></span> MPH</li>
             <li>Humidity: <span id="humidity-current"></span> %</li>
             <li>UV Index: <span id="uvi-current"></span></li>
           </ul>
         </div>
         <div id="forecast">
-          <h2>5-Day Forecast:</h2>
-          <div id="day1"></div>
-          <div id="day2"></div>
-          <div id="day3"></div>
-          <div id="day4"></div>
-          <div id="day5"></div>
+          <h2>5-Day Forecast</h2>
+          <div id="days">
+            <div id="day1"></div>
+            <div id="day2"></div>
+            <div id="day3"></div>
+            <div id="day4"></div>
+            <div id="day5"></div>
+          </div>
         </div>
       </main>
     </div>
