@@ -51,7 +51,7 @@ const getWeather = (city, lat, lon) => {
 
       selectedCity.innerHTML += `<span>${city}</span>`;
       selectedCity.innerHTML += ` <span>(${today})</span>`;
-      selectedCity.innerHTML += ` <img src="http://openweathermap.org/img/wn/${icon}@2x.png" width="50" height="50">`;
+      selectedCity.innerHTML += ` <img src="https://openweathermap.org/img/wn/${icon}@2x.png" width="50" height="50">`;
 
       tempCurrent.innerHTML = data.current.temp;
       windCurrent.innerHTML = data.current.wind_speed;
@@ -85,7 +85,7 @@ const getWeather = (city, lat, lon) => {
         let humidityForecast = data.daily[i].humidity;
 
         day.innerHTML = `<h2>${date}</h2>
-          <img src="http://openweathermap.org/img/wn/${iconForecast}@2x.png">
+          <img src="https://openweathermap.org/img/wn/${iconForecast}@2x.png">
           <ul>
             <li>Temp: ${tempForecast} &#8457;</li>
             <li>Wind: ${windForecast} MPH</li>
@@ -101,7 +101,7 @@ const getWeather = (city, lat, lon) => {
 // ADD CITY BTN TO LIST
 const getLatLon = (city) => {
   let queryURL =
-    "http://api.openweathermap.org/geo/1.0/direct?q=" +
+    "https://api.openweathermap.org/geo/1.0/direct?q=" +
     city +
     "&limit=1&appid=" +
     APIKey;
