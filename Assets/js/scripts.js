@@ -1,4 +1,3 @@
-
 const APIKey = config.APIKey;
 const searchBtn = document.getElementById("search-btn");
 const cityArchive = document.getElementById("city-archive");
@@ -18,16 +17,16 @@ const addToArchive = (city, lat, lon) => {
     lon: lon,
   };
   localStorage.setItem(city, JSON.stringify(cityCoord));
-  // todo: check to see if city exists
   addCity(city, lat, lon);
 };
 
+// ADD CITY BTN TO LIST
 const addCity = (city, lat, lon) => {
-  // check to see if city is already in list
-  cityArchive.innerHTML += 
-  `<button onclick="getWeather('${city}',${lat},${lon})">${city}</button>`;
+  // todo: check to see if city is already in list
+  cityArchive.innerHTML += `<button onclick="getWeather('${city}',${lat},${lon})">${city}</button>`;
 };
 
+// GET WEATHER FOR SEARCHED / SELECTED CITY
 const getWeather = (city, lat, lon) => {
   let queryURL =
     "https://api.openweathermap.org/data/2.5/onecall?lat=" +
@@ -51,9 +50,9 @@ const getWeather = (city, lat, lon) => {
       let icon = data.current.weather[0].icon;
 
       selectedCity.innerHTML += `<span>${city}</span>`;
-      selectedCity.innerHTML += ` <span>${today}</span>`;
+      selectedCity.innerHTML += ` <span>(${today})</span>`;
       selectedCity.innerHTML += ` <img src="http://openweathermap.org/img/wn/${icon}@2x.png" width="50" height="50">`;
-      
+
       tempCurrent.innerHTML = data.current.temp;
       windCurrent.innerHTML = data.current.wind_speed;
       humidityCurrent.innerHTML = data.current.humidity;
@@ -75,8 +74,8 @@ const getWeather = (city, lat, lon) => {
       }
 
       // add data to 5 day forecast cards
-      for ( var i = 0; i <= 4; i++) {
-        let day = document.getElementById("day"+(i+1));
+      for (var i = 0; i <= 4; i++) {
+        let day = document.getElementById("day" + (i + 1));
         let addDate = i + 1;
 
         let date = mm + "/" + (dd + addDate) + "/" + yyyy;
@@ -84,21 +83,22 @@ const getWeather = (city, lat, lon) => {
         let tempForecast = data.daily[i].temp.day;
         let windForecast = data.daily[i].wind_speed;
         let humidityForecast = data.daily[i].humidity;
-        
-        day.innerHTML =
-          `<h2>${date}</h2>
+
+        day.innerHTML = `<h2>${date}</h2>
           <img src="http://openweathermap.org/img/wn/${iconForecast}@2x.png">
           <ul>
-            <li>Temp: ${tempForecast}</li>
-            <li>Wind: ${windForecast}</li>
-            <li>Humidity: ${humidityForecast}</li>
-          </ul>` 
-      };
+            <li>Temp: ${tempForecast} &#8457;</li>
+            <li>Wind: ${windForecast} MPH</li>
+            <li>Humidity: ${humidityForecast} %</li>
+          </ul>`;
+      }
 
+      let weatherResults = document.getElementById("weather-results");
+      weatherResults.style.visibility = "visible";
     });
 };
 
-// get lat/lon based on city name
+// ADD CITY BTN TO LIST
 const getLatLon = (city) => {
   let queryURL =
     "http://api.openweathermap.org/geo/1.0/direct?q=" +
@@ -128,6 +128,6 @@ searchBtn.addEventListener("click", () => {
 // add archived city btns
 for (var i = 0; i < localStorage.length; i++) {
   var key = localStorage.key(i);
-  var item = JSON.parse( localStorage.getItem(key) );
-  addCity( key, item.lat, item.lon );
+  var item = JSON.parse(localStorage.getItem(key));
+  addCity(key, item.lat, item.lon);
 }
