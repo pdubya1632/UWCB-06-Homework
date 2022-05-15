@@ -1,4 +1,4 @@
-# UWCB-05-Homework
+# UWCB-06-Homework
 UW Coding Bootcamp : Homework 06
 
 ## Description
