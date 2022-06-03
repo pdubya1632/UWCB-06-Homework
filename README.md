@@ -1,4 +1,4 @@
-# UWCB-06-Homework
+# Weather Dashboard
 UW Coding Bootcamp : Homework 06
 
 ## Description
